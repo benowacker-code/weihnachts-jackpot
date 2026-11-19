@@ -1,5 +1,5 @@
-/* Weihnachts-Jackpot – Service Worker (Cache-first, versioniert). Version: e5703b0bdb41 */
-const CACHE='wj-e5703b0bdb41';
+/* Weihnachts-Jackpot – Service Worker (Cache-first, versioniert). Version: 400f17667f1f */
+const CACHE='wj-400f17667f1f';
 const FILES=["./", "index.html", "manifest.webmanifest", "icons/apple-touch-icon.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/favicon-32.png", "music/deck-the-halls.mp3", "music/azure.mp3", "music/this-is-christmas.mp3", "music/merry-early-christmas.mp3", "music/christmas-shopping-centre.mp3", "music/bells-of-yuletides-past.mp3", "music/a-cloudy-morning.mp3", "music/gingerbread-waltz.mp3", "music/hope-for-the-year.mp3", "music/faster-does-it.mp3", "music/jingle-em-bell-ish.mp3", "music/top-of-the-tower.mp3", "music/a-conversation-with-saul.mp3"];
 self.addEventListener('install',e=>{
   // alles (auch die Musik) bei der Installation laden; ohne HTTP-Cache, damit ein Update wirklich neu lädt

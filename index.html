@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de" data-build="2026-11-18 · 3895fd3d">
+<html lang="de" data-build="2026-11-19 · d48a7bd1">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<!-- Weihnachts-Jackpot · Build 2026-11-18 · 3895fd3d
+<!-- Weihnachts-Jackpot · Build 2026-11-19 · d48a7bd1
      Betrieb am Stand: iPad im Querformat mit Rotationssperre und Geführtem Zugriff (Bedienungshilfen).
      Bild wird per AirPlay gespiegelt: alles hier ist auf dem Fernseher sichtbar. -->
 <style>
@@ -113,6 +113,8 @@ body.jackpot #medals .md{animation:mdpulse .7s cubic-bezier(.3,1.6,.5,1) 3}
 #stage.narrow .counter.two .strip span{font-size:92px}
 .strip{position:absolute;left:0;top:0;width:100%;transition:transform .6s cubic-bezier(.3,1.35,.5,1)}
 .strip span{display:block;height:var(--dh);font-weight:800;font-stretch:78%;font-size:130px;line-height:154px;text-align:center;color:var(--tinte)}
+#counter.bump{animation:cbump .5s ease-out}
+@keyframes cbump{30%{transform:scale(1.12);filter:brightness(1.25) drop-shadow(0 0 16px rgba(255,220,150,.7))}}
 .price{padding:6px;border-radius:14px;background:var(--chrom);box-shadow:0 0 0 2px var(--tinte),0 8px 14px rgba(0,0,0,.4),inset 0 1px 0 #fff;transition:filter .3s}
 .price-in{width:min(164px,calc(var(--side) - 96px));padding:10px 0 12px;border-radius:9px;text-align:center;color:var(--creme);
   background:radial-gradient(130% 110% at 35% 20%,#336f50 0%,var(--gruen) 55%,var(--gruen-tief) 100%);box-shadow:inset 0 0 0 1.5px var(--tinte),inset 0 2px 6px rgba(0,0,0,.35)}
@@ -397,7 +399,7 @@ body:not(.locked) .paytag{display:none}
 .ad-mbox .acts{justify-content:flex-end;margin-top:20px}
 /* Preise */
 .pz td{height:59px}
-.pz.many td{height:54px}
+.pz.many td{height:50px}
 .pz.many img{width:46px;height:46px}
 .pz img{width:50px;height:50px;display:block}
 .pz tr.off td:not(:nth-child(-n+2)){opacity:.4}
@@ -407,12 +409,16 @@ body:not(.locked) .paytag{display:none}
 .pz .c-name{width:200px}.pz .c-val{width:108px}.pz .c-p{width:124px}
 .pz .stat{font-weight:700;font-size:15px;line-height:17px;white-space:normal;display:inline-block;max-width:92px}
 .pz .pz-none{height:52px;font-weight:700;color:rgba(34,25,21,.6)}
-.ad-body h3.symh{margin:14px 0 8px;font-size:14px;letter-spacing:.08em}
+.ad-body h3.symh{margin:10px 0 6px;font-size:14px;letter-spacing:.08em}
 .sympick{display:flex;flex-wrap:wrap;gap:8px 10px}
-.symadd{display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 14px 0 8px;border:0;border-radius:10px;background:#fffdf7;box-shadow:0 0 0 2px var(--tinte);
+.pz .freev{font-weight:800;color:var(--gruen,#2e6a4a);white-space:nowrap}
+.pz .freet{display:block;font-size:14px;line-height:1.25;color:rgba(34,25,21,.75)}
+.pz .freet b{font-weight:800;color:var(--tinte)}
+.symadd.fs{box-shadow:0 0 0 2.5px var(--lack)}
+.symadd{display:inline-flex;align-items:center;gap:6px;height:42px;padding:0 14px 0 8px;border:0;border-radius:10px;background:#fffdf7;box-shadow:0 0 0 2px var(--tinte);
   color:var(--tinte);font:inherit;font-weight:700;font-size:16px;cursor:pointer;white-space:nowrap}
 .symadd::before{content:"+";font-weight:900;font-size:22px;line-height:1;color:var(--lack)}
-.symadd img{width:38px;height:38px;display:block}
+.symadd img{width:32px;height:32px;display:block}
 .warn .btn.sm{height:34px;padding:0 12px;margin-left:8px;font-size:15px;vertical-align:middle}
 .sumrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 26px;margin-top:12px;font-weight:700}
 .sumrow b{font-weight:900}
@@ -546,7 +552,7 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
   #turn .pad{animation:none;transform:rotate(-90deg)}
   .bulb::before,.bulb::after,.strip,.sw::after{transition:none}
   body.ready .glass::after,.paytag,.cell.win img,.cell.win .glint::after,body.jackpot #title .t2,body.jackpot .marquee-light,body.jackpot #medals .md,
-  .ticket-wrap,.stamp,.reel.bump,.window.won .wl,.aw.hit::after,.window.won .ptr .lit,body.locked .price,#toast,.btn.arm,#knob.nope,.tg.nope svg,.trk .eq i,#medals .md.nope .mdw{animation:none}
+  #counter.bump,.ticket-wrap,.stamp,.reel.bump,.window.won .wl,.aw.hit::after,.window.won .ptr .lit,body.locked .price,#toast,.btn.arm,#knob.nope,.tg.nope svg,.trk .eq i,#medals .md.nope .mdw{animation:none}
   #medals .md.nope .mdsh{opacity:.4}
 }
 </style>
@@ -809,18 +815,23 @@ function trackOn(t,s){s=s||S;const v=s.tracks[t.f];return typeof v==='boolean'?v
 /* ---------- Einstellungen ---------- */
 /* Symbolnummer = Index (steckt in Einstellungen, Statistik, Gutschein): neue Symbole nur hinten anfügen, Reihenfolge wie ARTS in 10-symbols.js.
    0–6 sind die Grundsymbole (immer auf den Walzen), 7–12 Zusatzsymbole (auf den Walzen nur, solange ein Preis sie nutzt). */
-const SYM_NAMES=['Kuchen','Kaffee','Stern','Tanne','Glocke','Schneemann','Zuckerstangen','Geschenk','Lebkuchenherz','Bonbons','Kakao','Schokolade','Glücks-7'];
+const SYM_NAMES=['Kuchen','Kaffee','Stern','Tanne','Glocke','Schneemann','Zuckerstangen','Geschenk','Lebkuchenherz','Bonbons','Kakao','Schokolade','Glücks-7','Weihnachtsmann'];
 const NSYM=SYM_NAMES.length,BASE_SYMS=7;
+/* Freispiel: 3× Weihnachtsmann in der Gewinnlinie = +1 Spiel (kein Gutschein). Technisch ein Eintrag in S.prizes wie jeder Preis
+   (Schalter „Gewinn“, Chance, aktiv; belegt einen Platz auf dem Gewinnplan), Wert und Stufe zählen nicht. */
+const FREE=13,FREE_NAME='Freispiel',isFree=i=>i===FREE;
 const TIERS_ALL=['gross','mittel','klein'];
 const TIER_LABEL={gross:'groß',mittel:'mittel',klein:'klein'};
 const TIER_ORDER={gross:0,mittel:1,klein:2};
 const MAX_WIN=6,NAME_MAX=24;   // Name: höchstens 24 Zeichen (Gewinnplan bricht lange Namen zweizeilig um)
 const DEF_PINS={release:'1224',admin:'2412'};   // Standard laut Vorgabe; beim ersten Öffnen des Admins wird eine eigene PIN verlangt
+const FREE_P=5;   // Standard-Chance Freispiel in % (≈ jedes 20. Spiel)
 function defaultSettings(){
   const d=[{win:true,name:'Kuchen',value:2,tier:'gross',p:3.33},{win:true,name:'Kaffee',value:1,tier:'mittel',p:3.33},{win:true,name:'50 ct Rabatt',value:.5,tier:'klein',p:8.33}];
+  d[FREE]={win:true,name:FREE_NAME,value:0,tier:'klein',p:FREE_P};
   return{v:1,gamesPerEuro:3,confirm:'tap',pinRelease:DEF_PINS.release,pinAdmin:DEF_PINS.admin,
     prizes:SYM_NAMES.map((n,i)=>Object.assign({win:false,name:n,value:1,tier:'klein',p:0,active:true},d[i]||{})),
-    calc:{euros:100,k:SYM_NAMES.map((_,i)=>[10,10,25][i]||0)},
+    calc:{euros:100,k:SYM_NAMES.map((_,i)=>isFree(i)?0:[10,10,25][i]||0)},
     musicOn:true,musicVol:.7,sfxOn:true,sfxVol:1,hoho:'lang',switchLock:false,tracks:{},   // tracks: nur abweichend vom Standard (def)
     topEdge:'auto',fullscreen:'tippen'};   // Rand oben (Abdeckung unter der iPad-Statusleiste): 'auto' oder fest 0/24/40/56 px; Vollbild: 'tippen' | 'aus'
 }
@@ -836,6 +847,7 @@ function sanitizeSettings(o){
     q.win=!!p.win;q.name=String(p.name==null?q.name:p.name).replace(/\s+/g,' ').trim().slice(0,NAME_MAX)||SYM_NAMES[i];
     q.value=Math.round(num(p.value,0,100,q.value)*100)/100;q.tier=TIERS_ALL.includes(p.tier)?p.tier:q.tier;
     q.p=Math.round(num(p.p,0,100,q.p)*100)/100;q.active=p.active!==false;});
+  const fp=s.prizes[FREE];fp.value=0;fp.tier='klein';
   let n=0;s.prizes.forEach(p=>{if(p.win&&++n>MAX_WIN)p.win=false;});
   if(o.calc&&typeof o.calc==='object'){s.calc.euros=Math.round(num(o.calc.euros,0,100000,100));
     if(Array.isArray(o.calc.k))s.calc.k=s.calc.k.map((v,i)=>Math.round(num(o.calc.k[i],0,100000,v)));}
@@ -902,7 +914,8 @@ function effP(i){
 }
 const canFall=i=>{const p=S.prizes[i];return p.win&&p.active&&effP(i)>0;};
 const activeWins=()=>winSyms().filter(canFall);
-const allGone=()=>activeWins().length===0;   // keine Gewinne mehr möglich → Maschine sperrt
+const activePrizes=()=>activeWins().filter(i=>!isFree(i));   // Gutschein-Preise, die fallen können
+const allGone=()=>activePrizes().length===0;   // kein Gutschein-Preis mehr möglich → Maschine sperrt (Freispiele allein halten sie nicht offen)
 /* Ergebnis ziehen: Bänder in Symbolreihenfolge; ein deaktivierter Preis behält sein Band und wird so zur Niete (keine Umverteilung). */
 function drawSym(r){
   let x=r*100;
@@ -919,7 +932,7 @@ let FW={w:[],sum:1,last:BASE_SYMS-1,on:[]};
 function reelSyms(){
   const on=S.prizes.map((p,i)=>i<BASE_SYMS||p.win);
   let plain=S.prizes.filter((p,i)=>on[i]&&!p.win).length;
-  for(let i=BASE_SYMS;i<NSYM&&plain<MIN_PLAIN;i++)if(!on[i]){on[i]=true;plain++;}
+  for(let i=BASE_SYMS;i<NSYM&&plain<MIN_PLAIN;i++)if(!on[i]&&!isFree(i)){on[i]=true;plain++;}   // der Weihnachtsmann nie als Niete
   return on;
 }
 const onReel=i=>!!FW.on[i];
@@ -942,12 +955,15 @@ function draw(){   // Ergebnis wird VOR dem Dreh gezogen
 
 /* ---------- Rechner ---------- */
 function calcModel(euros,k,gpe){
-  const games=Math.max(0,euros)*gpe;
-  const rows=winSyms().map(i=>{const pr=S.prizes[i],ki=Math.max(0,k[i]||0),pSug=games>0?ki/games:0,pCur=canFall(i)?effP(i)/100:0;
+  /* Freispiele: Jedes Spiel bringt mit Chance f ein weiteres → im Mittel 1/(1−f) Spiele je bezahltem Spiel.
+     Mit diesen Spielen insgesamt rechnet der Vorschlag; „pro Euro“ zählt alle Spiele, die ein Euro im Mittel bringt. */
+  const f=canFall(FREE)?Math.min(.9,effP(FREE)/100):0,g=gpe/(1-f);
+  const games=Math.max(0,euros)*g;
+  const rows=winSyms().filter(i=>!isFree(i)).map(i=>{const pr=S.prizes[i],ki=Math.max(0,k[i]||0),pSug=games>0?ki/games:0,pCur=canFall(i)?effP(i)/100:0;
     return{i,name:pr.name,value:pr.value,k:ki,pSug,pCur,expSug:pSug*games,expCur:pCur*games,active:pr.active};});
   const agg=key=>{const p=rows.reduce((a,r)=>a+r[key],0),E=rows.reduce((a,r)=>a+r[key]*r.value,0);
-    return{p,E,perEuro:gpe*E,margin:1-gpe*E,atLeast1:1-Math.pow(1-Math.min(1,p),gpe)};};
-  return{games,rows,sug:agg('pSug'),cur:agg('pCur')};
+    return{p,E,perEuro:g*E,margin:1-g*E,atLeast1:1-Math.pow(1-Math.min(1,p),g)};};
+  return{games,rows,free:f,gpeEff:g,sug:agg('pSug'),cur:agg('pCur')};
 }
 
 /* ---------- Zahlen deutsch ---------- */
@@ -1175,6 +1191,27 @@ function artSeven(){   // Glücks-7 mit Prägekante (Jackpot)
   <path d="M27 20H62M66 44C57 58 50 74 46 98" fill="none" stroke="${K.white}" stroke-width="2.6" opacity=".6"/>
   <path d="M93 6l1.9 4.6 4.6 1.9-4.6 1.9-1.9 4.6-1.9-4.6-4.6-1.9 4.6-1.9Z" fill="${K.brass}" stroke="${K.ink}" stroke-width="1.4"/></g>`;
 }
+function artSanta(){   // Weihnachtsmann (Freispiel): Zipfelmütze mit Bommel, Rauschebart, rote Nase
+  const hat='M31 50C30 29 44 15 62 14C79 13 93 23 100 40L92 45C87 35 81 31 76 31C84 37 88 43 89 50Z';
+  const beard='M33 66C24 78 27 96 38 103C45 112 55 110 60 113C65 110 75 112 82 103C93 96 96 78 87 66C81 79 71 85 60 85C49 85 39 79 33 66Z';
+  const curls='M42 92q4 4 9 2M69 94q5 2 9-2M55 102q5 3 10 0M46 80q-3 6 1 11M74 80q3 6-1 11';
+  return `<path d="${hat}" fill="${K.red}"/>
+  <clipPath id="sth"><path d="${hat}"/></clipPath><g clip-path="url(#sth)"><path fill="url(#ht)" opacity=".42" fill-rule="evenodd" d="M0 0H120V120H0Z${circ(50,36,26)}"/></g>
+  <path d="${hat}" fill="none" ${OL}/>
+  <path d="M44 40Q48 26 62 21" fill="none" stroke="${K.white}" stroke-width="2.6" opacity=".5"/>
+  <circle cx="98" cy="46" r="9" fill="${K.white}" ${OL}/>${shade('stp',98,46,9,-3,-3,.4)}
+  <ellipse cx="60" cy="67" rx="23" ry="17" fill="#efc39d" ${OL}/>
+  <circle cx="45" cy="72" r="5" fill="#de7f72" opacity=".75"/><circle cx="75" cy="72" r="5" fill="#de7f72" opacity=".75"/>
+  <path d="${beard}" fill="${K.white}" ${OL}/>${''}
+  <clipPath id="stb"><path d="${beard}"/></clipPath><g clip-path="url(#stb)"><path fill="url(#ht)" opacity=".38" fill-rule="evenodd" d="M0 0H120V120H0Z${circ(54,86,30)}"/></g>
+  <path d="${curls}" fill="none" stroke="${K.ink}" stroke-width="2" opacity=".55"/>
+  <circle cx="51.5" cy="64" r="2.8" fill="${K.ink}"/><circle cx="68.5" cy="64" r="2.8" fill="${K.ink}"/>
+  <path d="M45 58.5q6-4.5 12-1M63 57.5q6-3.5 12 1" fill="none" stroke="${K.ink}" stroke-width="2.4"/>
+  <path d="M60 79C54 72 42 73 39 82C46 86 55 85 60 81C65 85 74 86 81 82C78 73 66 72 60 79Z" fill="${K.white}" stroke="${K.ink}" stroke-width="3"/>
+  <circle cx="60" cy="74" r="5.6" fill="#d8695c" stroke="${K.ink}" stroke-width="2.6"/><circle cx="58.2" cy="72.2" r="1.6" fill="${K.white}" opacity=".85"/>
+  <rect x="24" y="44" width="72" height="14" rx="7" fill="${K.white}" ${OL}/>
+  <path d="M30 49.5h8M46 48.5h7M61 49.5h8M76 48.5h8" stroke="${K.ink}" stroke-width="1.8" opacity=".35"/>`;
+}
 /* Preis-Symbole als Emaille-Plakette mit Chromring (gleiches Metall wie der Automat) */
 function medal(art,sc,dy=0,enamel=K.enamel){
   let beads='';for(let i=0;i<32;i++){const a=i/32*Math.PI*2;beads+=`<circle cx="${f2(60+51.2*Math.cos(a))}" cy="${f2(60+51.2*Math.sin(a))}" r="1.2" fill="#4a5055"/>`;}
@@ -1192,8 +1229,8 @@ const toUri=s=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
 /* Jedes Symbol gibt es zweimal: als Gewinnsymbol auf der Emaille-Plakette und als schlichtes Füllsymbol.
    Welche Fassung erscheint, folgt der Einstellung „Gewinn“ im Admin – Plakette heißt immer: dieses Symbol gewinnt. */
 // Reihenfolge = Symbolnummer (steckt in gespeicherten Einstellungen und der Statistik): neue Symbole nur hinten anfügen
-const ARTS=[artCake,artCoffee,artStar,artTree,artBell,artSnowman,artCanes,artGift,artGingerHeart,artSweets,artCocoa,artChoc,artSeven];
-const MEDAL_FIT=[[.8,0],[.79,-1],[.82,-1],[.74,0,K.redD],[.74,-1],[.74,0],[.76,0],[.76,0],[.76,-1],[.76,-1],[.76,0],[.78,0],[.76,0]];   // Tanne auf Lackrot statt Grün (Kontrast)
+const ARTS=[artCake,artCoffee,artStar,artTree,artBell,artSnowman,artCanes,artGift,artGingerHeart,artSweets,artCocoa,artChoc,artSeven,artSanta];
+const MEDAL_FIT=[[.8,0],[.79,-1],[.82,-1],[.74,0,K.redD],[.74,-1],[.74,0],[.76,0],[.76,0],[.76,-1],[.76,-1],[.76,0],[.78,0],[.76,0],[.8,1]];   // Tanne auf Lackrot statt Grün (Kontrast)
 const mkSym=a=>({img:toUri(svgDoc(a,false)),blur:toUri(svgDoc(a,true))});
 const SYM_M=ARTS.map((f,i)=>mkSym(medal(f(false),...MEDAL_FIT[i])));
 const SYM_P=ARTS.map(f=>mkSym(f(true)));
@@ -1926,6 +1963,7 @@ function fxLoop(){fc.clearRect(0,0,W,H);
 /* ================= Spielablauf ================= */
 let busy=false,winOpen=false,paused=false,msgTimer=0,msgHold=false,idleMsgI=0;
 let msgEl,spinBtn,windowEl;
+let creditHold=0,freeTok=0;   // creditHold: schon gutgeschriebene Freispiele, die der Zähler erst nach dem Walzenstopp zeigt
 const canPlay=()=>!busy&&!winOpen&&!paused&&G.credits>0&&!allGone();
 const isLocked=()=>(G.credits<1||allGone())&&!busy&&!winOpen;
 function poke(){lastInteract=performance.now();if(lightMode==='attract')setLights(isLocked()?'locked':'idle');}
@@ -1962,7 +2000,7 @@ function syncMachine(){ // nach jeder Einstellungsänderung
   syncSwitches();msgText='';update();
 }
 function update(){
-  setCounter(G.credits);
+  setCounter(G.credits-creditHold);
   const gone=allGone(),locked=isLocked(),ok=canPlay();
   body.classList.toggle('locked',locked);body.classList.toggle('gone',gone);body.classList.toggle('ready',ok);
   spinBtn.disabled=!ok;knob.setAttribute('aria-disabled',String(!ok));
@@ -2029,10 +2067,13 @@ function clearWin(){document.querySelectorAll('.aw.hit').forEach(a=>a.classList.
 
 async function startSpin(){
   if(!canPlay())return;
+  creditHold=0;freeTok++;              // noch nicht gezeigtes Freispiel sofort zeigen (falls direkt weitergespielt wird)
   const result=draw();                 // Zufallszug VOR dem Dreh; Ergebnis und Statistik sofort gespeichert
   G.credits--;ST.games++;
-  let w=null;
-  if(result.sym>=0){const p=S.prizes[result.sym];G.voucher++;
+  let w=null,free=false;
+  if(isFree(result.sym)){   // Freispiel: Guthaben sofort gutschreiben und speichern, am Zähler erst nach dem Stopp zeigen
+    free=G.credits<99;if(free){G.credits++;creditHold=1;}ST.wins[FREE]++;}
+  else if(result.sym>=0){const p=S.prizes[result.sym];G.voucher++;
     w={no:G.voucher,t:Date.now(),sym:result.sym,name:p.name,value:p.value,tier:p.tier};
     G.pending=w;ST.wins[result.sym]++;ST.vals[result.sym]=Math.round((ST.vals[result.sym]+p.value)*100)/100;
     ST.valueOut=Math.round((ST.valueOut+p.value)*100)/100;ST.log.unshift(w);if(ST.log.length>50)ST.log.length=50;}
@@ -2042,12 +2083,25 @@ async function startSpin(){
   await spinReels(result);
   busy=false;
   if(w)celebrate(w);
+  else if(isFree(result.sym))celebrateFree(free);
   else{
     setLights('off');play('lose',{gain:.9});msgHold=true;setMsg('Kein Gewinn – frohe Weihnachten!');update();
     setTimeout(()=>{if(!busy&&!winOpen&&lightMode==='off')setLights(isLocked()?'locked':'idle');},900);
     msgTimer=setTimeout(()=>{msgHold=false;if(!busy&&!winOpen)update();},3800);
   }
   poke();
+}
+/* Freispiel: kurze Inszenierung ohne Gutschein – Schlittenglocken, Zähler springt +1, danach sofort weiterspielbar */
+function celebrateFree(ok){
+  clearTimeout(msgTimer);msgHold=true;
+  setLights('mittel');windowEl.classList.add('won');
+  const aw=document.querySelector(`.aw[data-sym="${FREE}"]`);if(aw)aw.classList.add('hit');
+  reels.forEach(r=>{const c=r.row(1).c;c.style.setProperty('--n',2);c.classList.add('win');});
+  play('sleigh',{gain:.9});if(S.hoho!=='aus'&&ok)setTimeout(()=>play('hoho1',{gain:.85}),380);   // kurzes Ho ho ho passend zum Weihnachtsmann
+  setMsg(ok?'Ho ho ho – Freispiel! +1 Spiel':'Freispiel – Höchststand erreicht');
+  const tok=freeTok;
+  setTimeout(()=>{if(tok!==freeTok)return;creditHold=0;update();if(ok){play('coins',{gain:.7});const c=$('counter');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');}},reduce?0:450);
+  msgTimer=setTimeout(()=>{msgHold=false;if(!busy&&!winOpen){clearWin();setLights(isLocked()?'locked':'idle');update();}},2600);
 }
 const TIERS={
   gross:{n:4,delay:1750,stamp:'Hauptgewinn',conf:[170,null,null,-10,220]},
@@ -2391,6 +2445,14 @@ function closeModal(){const m=$('adModal');if(m)m.remove();}
 function tabPreise(){
   const ws=winSyms(),full=ws.length>=MAX_WIN,free=S.prizes.map((p,i)=>p.win?-1:i).filter(i=>i>=0);
   const rows=ws.map(i=>{const p=S.prizes[i];
+    if(isFree(i))return `<tr class="free">
+      <td><img alt="${SYM_NAMES[i]}" src="${symImg(i)}"></td>
+      <td><button type="button" class="sw" data-act="win" data-i="${i}" aria-pressed="true" aria-label="Freispiel ist an"></button></td>
+      <td class="c-name"><input class="in" data-f="name" data-i="${i}" value="${esc(p.name)}" maxlength="${NAME_MAX}" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Name Freispiel"></td>
+      <td class="c-val"><span class="freev">+1 Spiel</span></td>
+      <td><span class="freet">3× Weihnachtsmann, kein Gutschein<br><b data-o="frEvery"></b></span></td>
+      <td class="c-p"><span class="unit"><input class="in num" data-f="p" data-i="${i}" inputmode="decimal" value="${fmtN(p.p,2)}" aria-label="Wahrscheinlichkeit Freispiel">%</span></td>
+      <td><span class="swl"><button type="button" class="sw" data-act="active" data-i="${i}" aria-pressed="${p.active}" aria-label="Freispiel aktiv"></button><span class="stat" data-o="st${i}">${statusText(i)}</span></span></td></tr>`;
     return `<tr>
       <td><img alt="${SYM_NAMES[i]}" src="${symImg(i)}"></td>
       <td><button type="button" class="sw" data-act="win" data-i="${i}" aria-pressed="true" aria-label="${SYM_NAMES[i]} ist Gewinnsymbol"></button></td>
@@ -2399,17 +2461,17 @@ function tabPreise(){
       <td><div class="seg">${TIERS_ALL.map(t=>`<button type="button" data-act="tier" data-i="${i}" data-v="${t}" aria-pressed="${p.tier===t}">${TIER_LABEL[t]}</button>`).join('')}</div></td>
       <td class="c-p"><span class="unit"><input class="in num" data-f="p" data-i="${i}" inputmode="decimal" value="${fmtN(p.p,2)}" aria-label="Wahrscheinlichkeit ${SYM_NAMES[i]}">%</span></td>
       <td><span class="swl"><button type="button" class="sw" data-act="active" data-i="${i}" aria-pressed="${p.active}" aria-label="${SYM_NAMES[i]} aktiv"></button><span class="stat" data-o="st${i}">${statusText(i)}</span></span></td></tr>`;}).join('');
-  const pick=free.map(i=>`<button type="button" class="symadd" data-act="win" data-i="${i}" aria-label="${SYM_NAMES[i]} als Gewinn einsetzen"><img alt="" src="${symImg(i)}"><span>${SYM_NAMES[i]}</span></button>`).join('');
-  return `<table class="pz${ws.length>4?' many':''}"><thead><tr><th>Symbol</th><th>Gewinn</th><th>Name (Plan &amp; Gutschein)</th><th>Wert</th><th>Stufe</th><th>Chance</th><th>Status</th></tr></thead><tbody>${rows||'<tr><td colspan="7" class="pz-none">Noch kein Gewinn – unten ein Symbol antippen.</td></tr>'}</tbody></table>
+  const pick=free.map(i=>`<button type="button" class="symadd${isFree(i)?' fs':''}" data-act="win" data-i="${i}" aria-label="${isFree(i)?'Freispiel einsetzen':SYM_NAMES[i]+' als Gewinn einsetzen'}"><img alt="" src="${symImg(i)}"><span>${isFree(i)?'Freispiel (Weihnachtsmann)':SYM_NAMES[i]}</span></button>`).join('');
+  return `<table class="pz${ws.length>3?' many':''}"><thead><tr><th>Symbol</th><th>Gewinn</th><th>Name (Plan &amp; Gutschein)</th><th>Wert</th><th>Stufe</th><th>Chance</th><th>Status</th></tr></thead><tbody>${rows||'<tr><td colspan="7" class="pz-none">Noch kein Gewinn – unten ein Symbol antippen.</td></tr>'}</tbody></table>
     <h3 class="symh">${full?`${MAX_WIN} Gewinne – mehr passen nicht auf den Plan. Zum Tauschen erst einen Gewinn ausschalten.`:'Weiteren Gewinn einsetzen – Symbol antippen'}</h3>
     ${full?'':`<div class="sympick">${pick}</div>`}
     <div id="pzSum"></div><div class="msgline" id="pzMsg"></div>
-    <p class="note">Name kurz halten (Fernseher!): bei 5–6 Gewinnen höchstens etwa 8 Zeichen. „Vergriffen“ (aus oder 0 %): Der Preis fällt nicht mehr, seine Chance wird zur Niete. Stufe = Inszenierung und Klang („groß“ = Hauptgewinn).</p>`;
+    <p class="note" id="pzNote">Namen kurz halten (Fernseher!), bei 5–6 Gewinnen höchstens etwa 8 Zeichen. „Vergriffen“ (aus oder 0 %): fällt nicht mehr, die Chance wird Niete. Stufe = Inszenierung und Klang („groß“ = Hauptgewinn). Freispiel = sofort +1 Spiel, belegt einen Platz auf dem Plan.</p>`;
 }
 /* Status je Preis – gleiche Aussage wie der Gewinnplan auf der Maschine */
 function statusText(i){
   const p=S.prizes[i];if(!p.win)return '';
-  if(!p.active)return 'vergriffen';
+  if(!p.active)return isFree(i)?'aus':'vergriffen';
   if(effP(i)<=0)return p.p<=0?'fällt nie (0 %)':'fällt nie (Σ>100 %)';
   if(effP(i)<p.p-1e-9)return 'gekürzt (Σ>100 %)';
   return 'aktiv';
@@ -2417,26 +2479,30 @@ function statusText(i){
 const NEW_P=2;   // Chance in %, mit der ein neu eingesetzter Preis startet (vorher 0 %)
 function pzSum(){
   const el=$('pzSum');if(!el)return;
-  const ws=winSyms(),all=ws.reduce((a,i)=>a+S.prizes[i].p,0),act=activeWins().reduce((a,i)=>a+effP(i),0);   // wirksam (bei Σ>100 % gekürzt)
-  let h=`<div class="sumrow"><span>Gewinnsymbole: <b>${ws.length} von ${MAX_WIN}</b></span><span>Summe aller Chancen: <b>${fmtN(all,2)}&nbsp;%</b></span><span>Gewinnchance pro Spiel (nur aktive): <b data-o="pzAct">${fmtN(act,2)}&nbsp;%</b></span></div>`;
+  const ws=winSyms(),all=ws.reduce((a,i)=>a+S.prizes[i].p,0),act=activePrizes().reduce((a,i)=>a+effP(i),0);   // wirksam (bei Σ>100 % gekürzt), nur Gutscheine
+  const fr=canFall(FREE)?effP(FREE):0;
+  let h=`<div class="sumrow"><span>Gewinne: <b>${ws.length} von ${MAX_WIN}</b></span><span>Summe aller Chancen: <b>${fmtN(all,2)}&nbsp;%</b></span><span>Gutschein pro Spiel: <b data-o="pzAct">${fmtN(act,2)}&nbsp;%</b></span></div>`;
+  const fe=document.querySelector('#adBody [data-o="frEvery"]');if(fe)fe.textContent=fr>0?`≈ jedes ${fmtN(100/fr,0)}. Spiel`:'fällt nie';
   if(all>100)h+=`<div class="warn">Summe über 100 %: Preise weiter unten in der Liste fallen seltener oder nie (auf der Maschine dann „vergriffen“). Bitte Chancen senken.</div>`;
   if(allGone())h+=`<div class="warn">Kein Preis kann fallen: Die Maschine zeigt „Alle Preise vergeben“, Hebel und Freigabe sind gesperrt.</div>`;
   // Hauptgewinn-Prüfung: Die große Inszenierung (4 Blinkrunden, großer Jingle, langes Ho ho ho) gibt es nur bei Stufe „groß“.
-  const aw=activeWins(),maxV=aw.length?Math.max(...aw.map(i=>S.prizes[i].value)):0;
+  const aw=activePrizes(),maxV=aw.length?Math.max(...aw.map(i=>S.prizes[i].value)):0;
   if(aw.length>1&&!aw.some(i=>S.prizes[i].tier==='gross'&&S.prizes[i].value>=maxV)){
     const top=aw.find(i=>S.prizes[i].value===maxV),p=S.prizes[top];
     h+=`<div class="warn">„${esc(p.name)}“ (${fmtEur(p.value)}) ist der wertvollste Preis, hat aber Stufe „${TIER_LABEL[p.tier]}“ – die Hauptgewinn-Inszenierung gibt es nur bei „groß“. <button type="button" class="btn sm" data-act="tier" data-i="${top}" data-v="gross">Zum Hauptgewinn machen</button></div>`;}
+  if(fr>20)h+=`<div class="warn">Freispiel-Chance über 20 %: Pro Euro gibt es dann deutlich mehr Spiele (und damit mehr Gutscheine) – der Rechner berücksichtigt das.</div>`;
   const zero=ws.filter(i=>S.prizes[i].active&&S.prizes[i].p<=0);
   if(zero.length)h+=`<div class="warn">${zero.map(i=>'„'+esc(S.prizes[i].name)+'“').join(', ')} ${zero.length>1?'haben':'hat'} 0 % Chance – fällt nie und steht auf dem Plan als „vergriffen“.</div>`;
   const small=awardSmall().filter(i=>S.prizes[i]&&S.prizes[i].win);
   if(small.length)h+=`<div class="warn">Auf dem Plan sehr klein oder zweizeilig, am Fernseher schwer lesbar: ${small.map(i=>'„'+esc(S.prizes[i].name)+'“').join(', ')} – bitte kürzer${ws.length>=5?' (bei 5–6 Gewinnen höchstens etwa 8 Zeichen)':''}.</div>`;
   el.innerHTML=h;
+  const nt=$('pzNote');if(nt)nt.hidden=h.includes('class="warn"');   // Warnungen gehen vor: fester Hilfetext nur ohne Warnung (sonst reicht die Höhe nicht)
   winSyms().forEach(i=>{const s=document.querySelector(`#adBody [data-o="st${i}"]`);if(s)s.textContent=statusText(i);});
 }
 
 /* ---------- Reiter: Rechner ---------- */
 function tabRechner(){
-  const ws=winSyms(),n=S.gamesPerEuro;
+  const ws=winSyms().filter(i=>!isFree(i)),m0=calcModel(S.calc.euros,S.calc.k,S.gamesPerEuro),n=m0.free>0?fmtN(m0.gpeEff,2):S.gamesPerEuro;   // mit Freispielen: Spiele je Euro im Mittel
   const met=[['p','Gewinnchance pro Spiel','p = Σpᵢ'],['E','Erw. Gutscheinwert pro Spiel','E = Σ pᵢ·Wertᵢ'],['X','Gutscheinwert pro Euro',`${n}·E`],
     ['M','Marge pro Euro*',`1 − ${n}·E`],['A','Mind. 1 Gewinn pro Euro',`1 − (1 − p)<sup>${n}</sup>`]];
   return `<div class="calc">
@@ -2453,13 +2519,13 @@ function tabRechner(){
       <tr><td>Eingestellt</td>${met.map(([k])=>`<td class="v" data-o="c${k}"></td>`).join('')}</tr>
     </tbody></table>
     <div data-o="warn"></div>
-    <p class="note">Vorschlag pᵢ = Kontingent ÷ Spiele (N × ${n}) – so reicht jedes Kontingent im Mittel genau. „Eingestellt“ = tatsächlich wirksame Chancen aus „Preise“ (vergriffene zählen 0, bei Summe über 100 % gekürzt). Spiele pro Euro: ${n}. * Echte Marge nur, wenn die Klasse die Gutscheine selbst bezahlt – die Abrechnung ist Sache des Teams.</p>
+    <p class="note">Vorschlag pᵢ = Kontingent ÷ Spiele (N × ${n}) – so reicht jedes Kontingent im Mittel genau. „Eingestellt“ = tatsächlich wirksame Chancen aus „Preise“ (vergriffene zählen 0, bei Summe über 100 % gekürzt). Spiele pro Euro: ${n}${m0.free>0?' – mit Freispielen im Mittel mehr (oben angezeigt), damit rechnen Vorschlag und „pro Euro“':''}. * Echte Marge nur, wenn die Klasse die Gutscheine selbst bezahlt – die Abrechnung ist Sache des Teams.</p>
   </div>`;
 }
 function calcUpdate(){
   const b=$('adBody'),o=k=>b.querySelector(`[data-o="${k}"]`),set=(k,v)=>{const el=o(k);if(el)el.textContent=v;};
   const m=calcModel(S.calc.euros,S.calc.k,S.gamesPerEuro);
-  set('games',`→ ${fmtN(m.games,0)} Spiele (${S.gamesPerEuro} pro Euro)`);
+  set('games',m.free>0?`→ ${fmtN(m.games,0)} Spiele (${S.gamesPerEuro} pro Euro + Freispiele ≈ ${fmtN(m.gpeEff,2)})`:`→ ${fmtN(m.games,0)} Spiele (${S.gamesPerEuro} pro Euro)`);
   m.rows.forEach(r=>{set('ps'+r.i,fmtPct(r.pSug,2));set('pc'+r.i,r.active?fmtPct(r.pCur,2):'vergriffen');set('ex'+r.i,fmtN(r.expSug,1)+' / '+fmtN(r.expCur,1));});
   for(const [p,a] of [['s',m.sug],['c',m.cur]]){set(p+'p',fmtPct(a.p,1));set(p+'E',fmtEur(a.E,3));set(p+'X',fmtEur(a.perEuro,3));set(p+'M',fmtEur(a.margin,3));set(p+'A',fmtPct(a.atLeast1,1));}
   const why=applyBlock(m),ab=b.querySelector('[data-act="apply"]');if(ab)ab.disabled=!!why;
@@ -2502,7 +2568,7 @@ function statText(){
   const L=[`Weihnachts-Jackpot – Statistik`,`Stand: ${new Date(now).toLocaleString('de-DE')} (gezählt seit ${new Date(ST.since).toLocaleString('de-DE')})`,
     `Spiele gespielt: ${ST.games}`,`Freigaben (= Euro): ${inc}`,`Gutgeschriebene Spiele: ${ST.credited}`,
     `Gutscheinwert ausgegeben: ${fmtEur(out)}`,`Marge: ${fmtEur(inc-out)}${inc?` (${fmtEur((inc-out)/inc)} pro Euro)`:''}`,'','Gewinne je Preis:'];
-  statSyms().forEach(i=>L.push(`- ${S.prizes[i].name}: ${ST.wins[i]} (${fmtEur(ST.vals[i])})`));
+  statSyms().forEach(i=>L.push(isFree(i)?`- ${S.prizes[i].name} (+1 Spiel): ${ST.wins[i]}`:`- ${S.prizes[i].name}: ${ST.wins[i]} (${fmtEur(ST.vals[i])})`));
   L.push('',`Letzte Gewinne (neueste zuerst, max. 50):`);
   ST.log.forEach(w=>L.push(`Nr. ${pad3(w.no)}  ${ddmm(w.t)} ${hhmm(w.t)}  ${w.name} (${fmtEur(w.value)})`));
   if(!ST.log.length)L.push('(keine)');
@@ -2510,7 +2576,7 @@ function statText(){
 }
 const statSyms=()=>[...new Set([...winSyms(),...ST.wins.map((c,i)=>c>0?i:-1).filter(i=>i>=0)])].sort((a,b)=>a-b);
 function tabStatistik(){
-  const inc=ST.releases,out=ST.valueOut,mar=inc-out,wins=ST.wins.reduce((a,b)=>a+b,0);
+  const inc=ST.releases,out=ST.valueOut,mar=inc-out,wins=ST.wins.reduce((a,b,i)=>isFree(i)?a:a+b,0),frees=ST.wins[FREE]||0;
   return `<div class="stwrap"><div class="kpis">
     <div class="kpi"><b data-o="stGames">${fmtN(ST.games)}</b><span>Spiele gespielt</span></div>
     <div class="kpi"><b data-o="stRel">${fmtN(inc)}</b><span>Freigaben (= Euro)</span></div>
@@ -2519,9 +2585,10 @@ function tabStatistik(){
   <div class="st-cols"><div class="st-l">
     <h3>Gewinne je Preis</h3>
     <table><thead><tr><th>Preis</th><th>Anzahl</th><th>Wert</th></tr></thead><tbody>
-    ${statSyms().map(i=>`<tr><td>${esc(S.prizes[i].name)}</td><td data-o="stW${i}">${ST.wins[i]}</td><td>${fmtEur(ST.vals[i])}</td></tr>`).join('')}
-    <tr><td><b>Summe</b></td><td><b>${wins}</b></td><td><b>${fmtEur(out)}</b></td></tr></tbody></table>
-    <p class="note">Gewinnquote: ${ST.games?fmtPct(wins/ST.games,1):'–'} · ${fmtN(ST.credited)} Spiele gutgeschrieben · gezählt seit ${ddmm(ST.since)} ${hhmm(ST.since)} Uhr. Marge = Freigaben − Gutscheinwert (echte Marge nur, wenn die Klasse die Gutscheine bezahlt).</p>
+    ${statSyms().filter(i=>!isFree(i)).map(i=>`<tr><td>${esc(S.prizes[i].name)}</td><td data-o="stW${i}">${ST.wins[i]}</td><td>${fmtEur(ST.vals[i])}</td></tr>`).join('')}
+    <tr><td><b>Summe</b></td><td><b>${wins}</b></td><td><b>${fmtEur(out)}</b></td></tr>
+    ${statSyms().includes(FREE)?`<tr class="free"><td>${esc(S.prizes[FREE].name)} (+1 Spiel)</td><td data-o="stW${FREE}">${frees}</td><td>–</td></tr>`:''}</tbody></table>
+    <p class="note">Gewinnquote: ${ST.games?fmtPct(wins/ST.games,1):'–'} · ${fmtN(ST.credited)} Spiele gutgeschrieben${frees?` + ${fmtN(frees)} Freispiele`:''} · gezählt seit ${ddmm(ST.since)} ${hhmm(ST.since)} Uhr. Marge = Freigaben − Gutscheinwert (echte Marge nur, wenn die Klasse die Gutscheine bezahlt).</p>
   </div><div class="st-r">
     <h3>Letzte Gewinne (max. 50)</h3>
     <div class="log" id="stLog">${ST.log.length?ST.log.map(w=>`<div><span class="no">Nr.&nbsp;${pad3(w.no)}</span><span>${ddmm(w.t)} ${hhmm(w.t)}</span><span>${esc(w.name)}</span></div>`).join(''):'<div>Noch keine Gewinne.</div>'}</div>
@@ -2740,9 +2807,10 @@ function onAct(e){
       // Neu eingesetzt mit 0 %: sinnvolle Chance vorbelegen (sonst stünde er sofort als „vergriffen“ auf dem Plan) und ein
       // passendes Kontingent für den Rechner (sonst setzte „Vorschlag übernehmen“ ihn wieder auf 0 %)
       let pre=false;if(p.win&&p.p<=0){p.p=NEW_P;pre=true;}
-      if(p.win&&!(S.calc.k[i]>0))S.calc.k[i]=Math.max(1,Math.round(S.calc.euros*S.gamesPerEuro*p.p/100));
+      if(p.win&&!isFree(i)&&!(S.calc.k[i]>0))S.calc.k[i]=Math.max(1,Math.round(S.calc.euros*S.gamesPerEuro*p.p/100));
       changed();rerender();
       if(p.win){const tr=document.querySelector(`#adBody .pz tbody [data-act="win"][data-i="${i}"]`);if(tr){const row=tr.closest('tr');row.classList.add('fresh');setTimeout(()=>row.classList.remove('fresh'),2600);}}
+      if(isFree(i)){flash('pzMsg',p.win?`Freispiel eingesetzt mit ${fmtN(p.p,2)} % – 3× Weihnachtsmann gibt +1 Spiel.`:'Freispiel ist aus (Werte bleiben gespeichert).');break;}
       flash('pzMsg',p.win?`„${p.name}“ eingesetzt${pre?` mit ${fmtN(NEW_P,0)} % Chance`:''} – bitte Name, Wert, Stufe und Chance prüfen.`:`„${p.name}“ ist kein Gewinn mehr (Werte bleiben gespeichert).`);break;}
     case 'active':S.prizes[i].active=!S.prizes[i].active;changed();rerender();break;
     case 'tier':S.prizes[i].tier=v;changed();rerender();break;
