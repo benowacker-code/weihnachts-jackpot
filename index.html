@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de" data-build="2026-11-19 · 2311aec1">
+<html lang="de" data-build="2026-11-19 · 53d23b0c">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<!-- Weihnachts-Jackpot · Build 2026-11-19 · 2311aec1
+<!-- Weihnachts-Jackpot · Build 2026-11-19 · 53d23b0c
      Betrieb am Stand: iPad im Querformat mit Rotationssperre und Geführtem Zugriff (Bedienungshilfen).
      Bild wird per AirPlay gespiegelt: alles hier ist auf dem Fernseher sichtbar. -->
 <style>
@@ -843,20 +843,21 @@ const MAX_WIN=6,NAME_MAX=24;   // Name: höchstens 24 Zeichen (Gewinnplan bricht
 const DEF_PINS={release:'1224',admin:'2412'};   // Standard laut Vorgabe; beim ersten Öffnen des Admins wird eine eigene PIN verlangt
 const FREE_P=5,FREE_N=2;   // Freispiel: Standard-Chance in % (≈ jedes 20. Spiel) und Spiele je Freispiel
 const STOCK_MAX=9999;
-const PLAN_DEF=140;   // erwartete Einnahmen am Markttag in € (Prognose, siehe README „Prognose“) – im Admin änderbar
+const PLAN_DEF=100;   // erwartete Einnahmen am Markttag in € (Prognose: Median ≈ 95 €, siehe README „Prognose“) – im Admin änderbar
 /* Vorgabe der Gruppe (fest zugeteilte Stückzahlen): 3× Kaffee & Kuchen (Hauptgewinn, Symbol Glücks-7), 6× Kuchen, 5× Kaffee,
-   20× Schoko-Weihnachtsmann (Symbol Zuckerstange). Wert = Warenwert je Stück in €. Der Schoko-Wert (1 €) ist eine Annahme – im Admin anpassen. */
+   20× Schoko-Weihnachtsmann (Symbol Zuckerstange, Warenwert 0,15 €). Wert = Warenwert je Stück in €.
+   n0 = Startbestand (bestimmt die festen Chancen), n = noch vorhanden (zählt bei jedem Gutschein herunter). */
 function groupPrizes(){
   const d={};
-  d[12]={win:true,name:'Kaffee & Kuchen',value:3,tier:'gross',n:3};
-  d[0]={win:true,name:'Kuchen',value:2,tier:'mittel',n:6};
-  d[1]={win:true,name:'Kaffee',value:1,tier:'klein',n:5};
-  d[6]={win:true,name:'Schoko',value:1,tier:'klein',n:20};    // Schoko-Weihnachtsmann (kurzer Name: Gewinnplan am Fernseher)
-  d[FREE]={win:true,name:FREE_NAME,value:0,tier:'klein',p:FREE_P,n:0};
-  return SYM_NAMES.map((nm,i)=>Object.assign({win:false,name:nm,value:1,tier:'klein',p:0,active:true,n:0},d[i]||{}));
+  d[12]={win:true,name:'Kaffee & Kuchen',value:3,tier:'gross',n:3,n0:3};
+  d[0]={win:true,name:'Kuchen',value:2,tier:'mittel',n:6,n0:6};
+  d[1]={win:true,name:'Kaffee',value:1,tier:'klein',n:5,n0:5};
+  d[6]={win:true,name:'Schoko',value:.15,tier:'klein',n:20,n0:20};   // Schoko-Weihnachtsmann (kurzer Name: Gewinnplan am Fernseher)
+  d[FREE]={win:true,name:FREE_NAME,value:0,tier:'klein',p:FREE_P,n:0,n0:0};
+  return SYM_NAMES.map((nm,i)=>Object.assign({win:false,name:nm,value:1,tier:'klein',p:0,active:true,n:0,n0:0},d[i]||{}));
 }
 function defaultSettings(){
-  return{v:2,gamesPerEuro:3,confirm:'tap',pinRelease:DEF_PINS.release,pinAdmin:DEF_PINS.admin,
+  return{v:3,gamesPerEuro:4,confirm:'tap',pinRelease:DEF_PINS.release,pinAdmin:DEF_PINS.admin,
     prizes:groupPrizes(),auto:true,plan:PLAN_DEF,freeN:FREE_N,   // auto: Chancen aus Bestand, Warenwert und erwarteten Einnahmen (plan, € gesamt)
     calc:{euros:100,k:SYM_NAMES.map(()=>0)},
     musicOn:true,musicVol:.7,sfxOn:true,sfxVol:1,hoho:'lang',switchLock:false,tracks:{},   // tracks: nur abweichend vom Standard (def)
@@ -866,17 +867,17 @@ const TOP_EDGES=[0,24,40,56];
 const num=(v,a,b,def)=>{v=Number(v);return Number.isFinite(v)?clamp(v,a,b):def;};
 function sanitizeSettings(o){
   const s=defaultSettings();if(!o||typeof o!=='object')return s;
-  s.gamesPerEuro=Math.round(num(o.gamesPerEuro,1,10,3));
   s.confirm=o.confirm==='pin'?'pin':'tap';
   const pr=/^\d{4}$/.test(o.pinRelease)?o.pinRelease:s.pinRelease,pa=/^\d{4}$/.test(o.pinAdmin)?o.pinAdmin:s.pinAdmin;
   if(pr!==pa){s.pinRelease=pr;s.pinAdmin=pa;}
-  // Version 1 (vor der Gruppen-Vorgabe): Preise, Bestand und Automatik werden einmalig auf die Vorgabe der Gruppe gesetzt,
-  // alles andere (PINs, Spiele pro Euro, Ton, Musik, Anzeige) bleibt.
-  const old=o.v===1;
+  // Version 1–2 (vor der endgültigen Gruppen-Vorgabe): Preise, Bestand, Automatik und 4 Spiele pro Euro werden einmalig
+  // auf die Vorgabe der Gruppe gesetzt; alles andere (PINs, Ton, Musik, Anzeige) bleibt.
+  const old=typeof o.v==='number'&&o.v<3;
+  if(!old)s.gamesPerEuro=Math.round(num(o.gamesPerEuro,1,10,4));
   if(!old&&Array.isArray(o.prizes))o.prizes.slice(0,NSYM).forEach((p,i)=>{if(!p||typeof p!=='object')return;const q=s.prizes[i];
     q.win=!!p.win;q.name=String(p.name==null?q.name:p.name).replace(/\s+/g,' ').trim().slice(0,NAME_MAX)||SYM_NAMES[i];
     q.value=Math.round(num(p.value,0,100,q.value)*100)/100;q.tier=TIERS_ALL.includes(p.tier)?p.tier:q.tier;
-    q.p=Math.round(num(p.p,0,100,q.p)*1e4)/1e4;q.active=p.active!==false;q.n=Math.round(num(p.n,0,STOCK_MAX,q.n));});
+    q.p=Math.round(num(p.p,0,100,q.p)*1e4)/1e4;q.active=p.active!==false;q.n=Math.round(num(p.n,0,STOCK_MAX,q.n));q.n0=Math.max(q.n,Math.round(num(p.n0==null?p.n:p.n0,0,STOCK_MAX,q.n)));});
   const fp=s.prizes[FREE];fp.value=0;fp.tier='klein';
   let n=0;s.prizes.forEach(p=>{if(p.win&&++n>MAX_WIN)p.win=false;});
   if(!old){s.auto=o.auto!==false;s.plan=Math.round(num(o.plan,10,100000,PLAN_DEF));s.freeN=Math.round(num(o.freeN,1,3,FREE_N));}
@@ -985,27 +986,25 @@ function draw(){   // Ergebnis wird VOR dem Dreh gezogen
   return drawRaw();
 }
 
-/* ---------- Automatik: Chancen aus Bestand, Warenwert und erwarteten Einnahmen ----------
-   Ziel: Der Bestand reicht im Mittel genau bis zu den erwarteten Einnahmen S.plan.
-   Warenwert je € (ev) = Restbestandswert ÷ noch erwartete Einnahmen (S.plan − bisher eingenommen, mindestens 20 % von S.plan).
-   Jedes Gutschein-Stück bekommt dieselbe Chance c (pᵢ = c · Bestandᵢ), c so gewählt, dass ev = Spiele je € · Σ pᵢ·Wertᵢ,
-   Spiele je € = g / (1 − m·f) mit Freispielen (Chance f, m Spiele je Freispiel). Teure Preise mit wenig Bestand fallen dadurch
-   selten, billige mit viel Bestand oft; alle Bestände gehen im Mittel gleichzeitig zu Ende. Vor jedem Spiel neu gerechnet:
-   Kommen mehr Leute als erwartet, gehen die Preise früher aus; bleibt gegen Ende Bestand übrig, steigen die Chancen. */
-const restPlan=()=>Math.max(S.plan-ST.releases,S.plan*.2);
-const targetEv=()=>stockValue()/restPlan();
+/* ---------- Automatik: feste Chancen aus Startbestand und erwarteten Einnahmen ----------
+   Die Chancen bleiben den ganzen Markttag gleich (fair: jeder Spieler hat dieselben Chancen). Gerechnet wird einmal aus dem
+   Startbestand n0 und den erwarteten Einnahmen S.plan, so dass der Bestand im Mittel genau bis S.plan reicht:
+     pᵢ = n0ᵢ / (S.plan · Spiele je €),  Spiele je € = g / (1 − m·f) mit Freispielen (Chance f, m Spiele je Freispiel).
+   Jedes Stück hat also dieselbe Chance; der Warenwert ändert die Chancen nicht, er ergibt nur den Wert je € (Σ n0·Wert ÷ S.plan).
+   Ist ein Preis aus (Bestand 0) oder auf „vergriffen“ gestellt, wird sein Anteil zur Niete – die anderen Chancen bleiben gleich.
+   Neu gerechnet wird nur, wenn im Admin etwas geändert wird (Startbestand, erwartete Einnahmen, Spiele pro Euro, Freispiel). */
 function freeRate(){const fp=S.prizes[FREE];return fp.win&&fp.active?Math.min(.3,Math.max(0,fp.p)/100):0;}
 const spinsPerEuro=()=>S.gamesPerEuro/(1-Math.min(.9,S.freeN*freeRate()));
 function autoP(){
   if(!S.auto)return;
-  const ws=winSyms().filter(i=>!isFree(i)),stockVal=ws.reduce((a,i)=>a+(S.prizes[i].active?S.prizes[i].n*S.prizes[i].value:0),0);
-  let c=stockVal>0?targetEv()/(spinsPerEuro()*stockVal):0;
-  const tot=ws.reduce((a,i)=>a+(S.prizes[i].active?S.prizes[i].n:0),0)*c,room=Math.max(0,1-freeRate());
-  if(tot>room)c*=room/tot;   // mehr als 100 % ginge nicht – dann Ziel nicht erreichbar (Admin warnt)
-  ws.forEach(i=>{const p=S.prizes[i];p.p=p.active?Math.round(c*p.n*1e6)/1e4:0;});
+  const ws=winSyms().filter(i=>!isFree(i));
+  let c=S.plan>0?1/(S.plan*spinsPerEuro()):0;
+  const tot=ws.reduce((a,i)=>a+S.prizes[i].n0,0)*c,room=Math.max(0,1-freeRate());
+  if(tot>room)c*=room/tot;   // mehr als 100 % ginge nicht (erwartete Einnahmen zu klein) – Admin warnt
+  ws.forEach(i=>{const p=S.prizes[i];p.p=Math.round(c*p.n0*1e6)/1e4;});
 }
-const stockValue=()=>winSyms().filter(i=>!isFree(i)&&S.prizes[i].active).reduce((a,i)=>a+S.prizes[i].n*S.prizes[i].value,0);
-autoP();   // beim Start: Chancen aus gespeichertem Bestand
+const stockValue=(start)=>winSyms().filter(i=>!isFree(i)&&S.prizes[i].active).reduce((a,i)=>a+(start?S.prizes[i].n0:S.prizes[i].n)*S.prizes[i].value,0);
+autoP();   // beim Start: feste Chancen aus Startbestand und erwarteten Einnahmen
 
 /* ---------- Rechner ---------- */
 function calcModel(euros,k,gpe){
@@ -2172,7 +2171,6 @@ function clearWin(){document.querySelectorAll('.aw.hit').forEach(a=>a.classList.
 
 async function startSpin(){
   if(!canPlay())return;
-  if(S.auto)autoP();                   // Chancen aus aktuellem Bestand und bisherigen Einnahmen
   creditHold=0;freeTok++;              // noch nicht gezeigtes Freispiel sofort zeigen (falls direkt weitergespielt wird)
   const result=draw();                 // Zufallszug VOR dem Dreh; Ergebnis und Statistik sofort gespeichert
   G.credits--;ST.games++;
@@ -2180,7 +2178,7 @@ async function startSpin(){
   if(isFree(result.sym)){   // Freispiel: Guthaben sofort gutschreiben und speichern, am Zähler erst nach dem Stopp zeigen
     const add=Math.max(0,Math.min(S.freeN,99-G.credits));free=add;if(add){G.credits+=add;creditHold=add;}ST.wins[FREE]++;}
   else if(result.sym>=0){const p=S.prizes[result.sym];G.voucher++;
-    p.n=Math.max(0,p.n-1);autoP();saveSettings();stockChanged=true;   // Bestand der Gruppe: ein Stück weniger, Chancen neu
+    p.n=Math.max(0,p.n-1);saveSettings();stockChanged=true;   // Bestand: ein Stück weniger (Chancen bleiben; bei 0 wird der Anteil zur Niete)
     w={no:G.voucher,t:Date.now(),sym:result.sym,name:p.name,value:p.value,tier:p.tier};
     G.pending=w;ST.wins[result.sym]++;ST.vals[result.sym]=Math.round((ST.vals[result.sym]+p.value)*100)/100;
     ST.valueOut=Math.round((ST.valueOut+p.value)*100)/100;ST.log.unshift(w);if(ST.log.length>50)ST.log.length=50;}
@@ -2589,7 +2587,7 @@ function tabPreise(){
       <td><button type="button" class="sw" data-act="win" data-i="${i}" aria-pressed="true" aria-label="${SYM_NAMES[i]} ist Gewinnsymbol"></button></td>
       <td class="c-name"><input class="in" data-f="name" data-i="${i}" value="${esc(p.name)}" maxlength="${NAME_MAX}" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Name ${SYM_NAMES[i]}"></td>
       <td class="c-val"><span class="unit"><input class="in num" data-f="value" data-i="${i}" inputmode="decimal" value="${fmtN(p.value,2)}" aria-label="Warenwert ${SYM_NAMES[i]}">€</span></td>
-      <td class="c-n"><span class="unit"><input class="in num${p.n<=0?' zero':''}" data-f="n" data-i="${i}" inputmode="numeric" value="${fmtN(p.n,0)}" aria-label="Bestand ${SYM_NAMES[i]}">Stk.</span></td>
+      <td class="c-n"><span class="unit"><input class="in num${p.n0<=0?' zero':''}" data-f="n" data-i="${i}" inputmode="numeric" value="${fmtN(p.n0,0)}" aria-label="Startbestand ${SYM_NAMES[i]}">Stk.</span></td>
       <td><div class="seg">${TIERS_ALL.map(t=>`<button type="button" data-act="tier" data-i="${i}" data-v="${t}" aria-pressed="${p.tier===t}">${TIER_LABEL[t]}</button>`).join('')}</div></td>
       <td class="c-p">${S.auto?`<span class="autop" data-o="ap${i}" title="automatisch aus Bestand und Warenwert">${fmtN(p.p,2)}&nbsp;%</span>`:`<span class="unit"><input class="in num" data-f="p" data-i="${i}" inputmode="decimal" value="${fmtN(p.p,2)}" aria-label="Wahrscheinlichkeit ${SYM_NAMES[i]}">%</span>`}</td>
       <td><span class="swl"><button type="button" class="sw" data-act="active" data-i="${i}" aria-pressed="${p.active}" aria-label="${SYM_NAMES[i]} aktiv"></button><span class="stat" data-o="st${i}">${statusText(i)}</span></span></td></tr>`;}).join('');
@@ -2604,18 +2602,18 @@ function tabPreise(){
 function statusText(i){
   const p=S.prizes[i];if(!p.win)return '';
   if(!p.active)return isFree(i)?'aus':'vergriffen';
-  if(!inStock(i))return 'Bestand 0';
+  if(!inStock(i))return 'aus (0 übrig)';
   if(effP(i)<=0)return p.p<=0?'fällt nie (0 %)':'fällt nie (Σ>100 %)';
   if(effP(i)<p.p-1e-9)return 'gekürzt (Σ>100 %)';
-  return 'aktiv';
+  return isFree(i)||!S.auto?'aktiv':`noch ${fmtN(p.n,0)}`;
 }
 const NEW_P=2,NEW_N=10;   // Chance in %, mit der ein neu eingesetzter Preis startet (vorher 0 %)
 function pzSum(){
   const el=$('pzSum');if(!el)return;
   const ws=winSyms(),all=ws.reduce((a,i)=>a+S.prizes[i].p,0),act=activePrizes().reduce((a,i)=>a+effP(i),0);   // wirksam (bei Σ>100 % gekürzt), nur Gutscheine
   const fr=canFall(FREE)?effP(FREE):0;
-  let h=`<div class="sumrow"><span>Gewinne: <b>${ws.length} von ${MAX_WIN}</b></span>${S.auto?`<span>Bestandswert: <b>${fmtEur(stockValue())}</b></span><span>reicht bis ≈ <b>${fmtN(S.plan,0)}&nbsp;€</b> Einnahmen</span><span>Warenwert je €: <b>${fmtEur(targetEv())}</b></span>`:`<span>Summe aller Chancen: <b>${fmtN(all,2)}&nbsp;%</b></span>`}<span>Gutschein pro Spiel: <b data-o="pzAct">${fmtN(act,2)}&nbsp;%</b></span></div>`;
-  if(S.auto&&autoShort())h+=`<div class="warn">Die erwarteten Einnahmen (Reiter „Rechner“) sind zu klein für diesen Bestand: Die Chancen lägen über 100 %. Wirksam ist weniger, es bleibt Bestand übrig.</div>`;
+  let h=`<div class="sumrow"><span>Gewinne: <b>${ws.length} von ${MAX_WIN}</b></span>${S.auto?`<span>Startbestand: <b>${fmtEur(stockValue(true))}</b></span><span>reicht bis ≈ <b>${fmtN(S.plan,0)}&nbsp;€</b> Einnahmen</span><span>Warenwert je €: <b>${fmtEur(stockValue(true)/S.plan)}</b></span>`:`<span>Summe aller Chancen: <b>${fmtN(all,2)}&nbsp;%</b></span>`}<span>Gutschein pro Spiel: <b data-o="pzAct">${fmtN(act,2)}&nbsp;%</b></span></div>`;
+  if(autoShort())h+=`<div class="warn">Die erwarteten Einnahmen (Reiter „Rechner“) sind zu klein für diesen Bestand: Die Chancen lägen über 100 %. Wirksam ist weniger, es bleibt Bestand übrig.</div>`;
   const fe=document.querySelector('#adBody [data-o="frEvery"]');if(fe)fe.textContent=fr>0?`≈ jedes ${fmtN(100/fr,0)}. Spiel`:'fällt nie';
   if(all>100)h+=`<div class="warn">Summe über 100 %: Preise weiter unten in der Liste fallen seltener oder nie (auf der Maschine dann „vergriffen“). Bitte Chancen senken.</div>`;
   if(allGone())h+=`<div class="warn">Kein Preis kann fallen: Die Maschine zeigt „Alle Preise vergeben“, Hebel und Freigabe sind gesperrt.</div>`;
@@ -2637,24 +2635,25 @@ function pzSum(){
 /* ---------- Reiter: Rechner ---------- */
 /* Automatik zu knapp: ev nicht erreichbar, weil die Chancen über 100 % lägen */
 const evNow=()=>spinsPerEuro()*activePrizes().reduce((a,i)=>a+effP(i)/100*S.prizes[i].value,0);
-function autoShort(){return stockValue()>0&&evNow()<targetEv()-1e-6;}
+function autoShort(){const n0=winSyms().filter(i=>!isFree(i)).reduce((a,i)=>a+S.prizes[i].n0,0);return S.auto&&n0/(S.plan*spinsPerEuro())>1-freeRate()+1e-9;}
 function tabRechnerAuto(){
   const ws=winSyms().filter(i=>!isFree(i)),g=spinsPerEuro(),f=canFall(FREE)?effP(FREE)/100:0,inc=ST.releases;
-  const pc=activePrizes().reduce((a,i)=>a+effP(i)/100,0),pieces=ws.reduce((a,i)=>a+(S.prizes[i].active?S.prizes[i].n:0),0);
+  const pc=activePrizes().reduce((a,i)=>a+effP(i)/100,0),left=ws.reduce((a,i)=>a+S.prizes[i].n,0),start=ws.reduce((a,i)=>a+S.prizes[i].n0,0);
   const atLeast1=1-Math.pow(1-Math.min(1,pc),g);
-  const rows=ws.map(i=>{const p=S.prizes[i],pi=canFall(i)?effP(i)/100:0,per=pi>0?1/(g*pi):0;
-    return `<tr><td><span class="pname"><img alt="" src="${medalImg(i)}">${esc(p.name)}</span></td><td class="v">${fmtEur(p.value)}</td><td class="v">${fmtN(p.n,0)} Stk.</td>
-      <td class="v">${fmtEur(p.n*p.value)}</td><td class="v">${pi>0?fmtPct(pi,2):'–'}</td><td class="v">${pi>0?'≈ alle '+fmtN(per,0)+' €':'vergriffen'}</td></tr>`;}).join('');
+  const rows=ws.map(i=>{const p=S.prizes[i],pi=S.prizes[i].p/100,on=canFall(i),per=pi>0?1/(g*pi):0;
+    return `<tr><td><span class="pname"><img alt="" src="${medalImg(i)}">${esc(p.name)}</span></td><td class="v">${fmtEur(p.value)}</td><td class="v">${fmtN(p.n0,0)} Stk.</td>
+      <td class="v">${fmtN(p.n,0)} Stk.</td><td class="v">${pi>0?fmtPct(pi,2):'–'}${on?'':' <small>(aus)</small>'}</td><td class="v">${pi>0?'≈ alle '+fmtN(per,0)+' €':'–'}</td></tr>`;}).join('');
   return `<div class="calc">
     <div class="nrow"><span class="swl"><button type="button" class="sw" data-act="auto" aria-pressed="true" aria-label="Automatik"></button>Automatik</span>
-      <label for="cPlan">Erwartete Einnahmen</label><span class="unit"><input class="in num" id="cPlan" data-f="plan" inputmode="numeric" value="${fmtN(S.plan,0)}" autocomplete="off">€</span><span>am ganzen Markttag</span><span class="grow"></span><span class="msgline" id="cMsg"></span></div>
-    <table class="ct${ws.length>4?' many':''}"><thead><tr><th>Preis</th><th class="v">Warenwert</th><th class="v">Bestand</th><th class="v">Wert gesamt</th><th class="v">Chance je Spiel</th><th class="v">im Mittel 1 Stück</th></tr></thead><tbody>
+      <label for="cPlan">Erwartete Einnahmen</label><span class="unit"><input class="in num" id="cPlan" data-f="plan" inputmode="numeric" value="${fmtN(S.plan,0)}" autocomplete="off">€</span><span>am ganzen Markttag</span><span class="grow"></span><span class="msgline" id="cMsg"></span>
+      <button type="button" class="btn" data-act="refill" ${left<start?'':'disabled'}>Bestand auffüllen</button></div>
+    <table class="ct${ws.length>4?' many':''}"><thead><tr><th>Preis</th><th class="v">Warenwert</th><th class="v">Start</th><th class="v">Noch da</th><th class="v">Chance je Spiel (fest)</th><th class="v">im Mittel 1 Stück</th></tr></thead><tbody>
     ${rows||'<tr><td colspan="6">Keine Gewinnsymbole eingestellt.</td></tr>'}</tbody></table>
-    <table class="res"><thead><tr><th></th><th class="v">Bisher eingenommen<small>Freigaben</small></th><th class="v">Restbestand<small>${fmtN(pieces,0)} Stück</small></th><th class="v">Warenwert je €<small>Rest ÷ noch erwartet</small></th><th class="v">Gutschein je Spiel<small>${fmtN(g,2)} Spiele je €</small></th><th class="v">Mind. 1 Gutschein<small>je Euro</small></th></tr></thead><tbody>
-      <tr><td>Jetzt</td><td class="v">${fmtEur(inc,0)}</td><td class="v">${fmtEur(stockValue())}</td><td class="v">${fmtEur(evNow(),2)}</td><td class="v">${fmtPct(pc,1)}</td><td class="v">${fmtPct(atLeast1,0)}</td></tr>
+    <table class="res"><thead><tr><th></th><th class="v">Bisher eingenommen<small>Freigaben</small></th><th class="v">Noch da<small>${fmtN(left,0)} von ${fmtN(start,0)} Stück</small></th><th class="v">Warenwert je €<small>Start ÷ erwartet</small></th><th class="v">Gutschein je Spiel<small>${fmtN(g,2)} Spiele je €</small></th><th class="v">Mind. 1 Gutschein<small>je Euro</small></th></tr></thead><tbody>
+      <tr><td>Jetzt</td><td class="v">${fmtEur(inc,0)}</td><td class="v">${fmtEur(stockValue())}</td><td class="v">${fmtEur(stockValue(true)/S.plan,2)}</td><td class="v">${fmtPct(pc,1)}</td><td class="v">${fmtPct(atLeast1,0)}</td></tr>
     </tbody></table>
-    ${autoShort()?'<div class="warn">Bestand zu groß für die erwarteten Einnahmen: Die Chancen lägen über 100 %. Erwartete Einnahmen erhöhen.</div>':''}
-    <p class="note">Die Maschine verteilt den Bestand so, dass er im Mittel bis ${fmtN(S.plan,0)} € Einnahmen reicht. Jedes Stück hat dieselbe Chance: Häufige, günstige Preise fallen oft, seltene, teure selten. Vor jedem Spiel wird neu gerechnet – kommen mehr Leute als erwartet, ist früher alles vergeben; bleibt gegen Ende etwas übrig, steigen die Chancen. Während des Markts anpassbar: Zahl ändern, fertig. Freispiele${f>0?` (${fmtPct(f,0)}, +${S.freeN})`:''} sind eingerechnet. „Bisher eingenommen“ = Freigaben in der Statistik – Statistik vor Marktbeginn zurücksetzen.</p>
+    ${autoShort()?'<div class="warn">Startbestand zu groß für die erwarteten Einnahmen: Die Chancen lägen über 100 %. Erwartete Einnahmen erhöhen.</div>':''}
+    <p class="note">Die Chancen sind fest und für alle Spieler gleich. Gerechnet einmal aus Startbestand und erwarteten Einnahmen: Jedes Stück hat dieselbe Chance, so reicht der Bestand im Mittel bis ${fmtN(S.plan,0)} €. Ist ein Preis aus, kann er nicht mehr fallen – sein Anteil wird zur Niete, die anderen Chancen bleiben. Neu gerechnet wird nur, wenn ihr hier oder unter „Preise“ etwas ändert. Freispiele${f>0?` (${fmtPct(f,0)}, +${S.freeN})`:''} sind eingerechnet. „Bisher eingenommen“ = Freigaben in der Statistik.</p>
   </div>`;
 }
 function tabRechner(){
@@ -2964,13 +2963,14 @@ function onAct(e){
       // Neu eingesetzt mit 0 %: sinnvolle Chance vorbelegen (sonst stünde er sofort als „vergriffen“ auf dem Plan) und ein
       // passendes Kontingent für den Rechner (sonst setzte „Vorschlag übernehmen“ ihn wieder auf 0 %)
       let pre=false;if(p.win&&p.p<=0){p.p=NEW_P;pre=true;}
-      if(p.win&&!isFree(i)&&p.n<=0)p.n=NEW_N;   // Bestand vorbelegen, sonst wäre er sofort vergriffen
+      if(p.win&&!isFree(i)&&p.n0<=0){p.n0=NEW_N;p.n=NEW_N;}   // Bestand vorbelegen, sonst wäre er sofort vergriffen
       if(p.win&&!isFree(i)&&!(S.calc.k[i]>0))S.calc.k[i]=Math.max(1,Math.round(S.calc.euros*S.gamesPerEuro*p.p/100));
       changed();rerender();
       if(p.win){const tr=document.querySelector(`#adBody .pz tbody [data-act="win"][data-i="${i}"]`);if(tr){const row=tr.closest('tr');row.classList.add('fresh');setTimeout(()=>row.classList.remove('fresh'),2600);}}
       if(isFree(i)){flash('pzMsg',p.win?`Freispiel eingesetzt mit ${fmtN(p.p,2)} % – 3× Weihnachtsmann gibt +${S.freeN} ${gamesWord(S.freeN)}.`:'Freispiel ist aus (Werte bleiben gespeichert).');break;}
       flash('pzMsg',p.win?`„${p.name}“ eingesetzt${S.auto?` mit Bestand ${fmtN(p.n,0)}`:pre?` mit ${fmtN(NEW_P,0)} % Chance`:''} – bitte Name, Warenwert, Bestand und Stufe prüfen.`:`„${p.name}“ ist kein Gewinn mehr (Werte bleiben gespeichert).`);break;}
     case 'active':S.prizes[i].active=!S.prizes[i].active;changed();rerender();break;
+    case 'refill':winSyms().forEach(k=>{S.prizes[k].n=S.prizes[k].n0;});changed();rerender();flash('cMsg','Bestand wieder auf Start.');break;
     case 'freeN':S.freeN=clamp(+v,1,3);changed();rerender();break;
     case 'auto':S.auto=!S.auto;if(!S.auto)activePrizes().forEach(i=>{S.prizes[i].p=Math.round(S.prizes[i].p*100)/100;});changed();rerender();
       flash('cMsg',S.auto?'Automatik an – Chancen kommen aus Bestand und Warenwert.':'Automatik aus – Chancen jetzt von Hand (aktuelle Werte übernommen).');break;
@@ -3016,10 +3016,10 @@ function onField(e,commit){
     else{const v=parseNum(el.value);if(Number.isFinite(v))p[f]=Math.round(clamp(v,0,100)*100)/100;el.value=fmtN(p[f],2);}
     changed();pzSum();refreshAutoP();return;
   }
-  if(f==='n'){
-    if(!commit)return;const v=parseNum(el.value,true);
-    if(Number.isFinite(v))S.prizes[i].n=Math.round(clamp(v,0,STOCK_MAX));
-    el.value=fmtN(S.prizes[i].n,0);el.classList.toggle('zero',S.prizes[i].n<=0);changed();pzSum();refreshAutoP();return;
+  if(f==='n'){   // Startbestand; „noch da“ ändert sich um dieselbe Differenz (schon ausgegebene Stücke bleiben ausgegeben)
+    if(!commit)return;const v=parseNum(el.value,true),p=S.prizes[i];
+    if(Number.isFinite(v)){const n0=Math.round(clamp(v,0,STOCK_MAX));p.n=clamp(p.n+n0-p.n0,0,n0);p.n0=n0;}
+    el.value=fmtN(p.n0,0);el.classList.toggle('zero',p.n0<=0);changed();pzSum();refreshAutoP();return;
   }
   if(f==='plan'){
     if(!commit)return;const v=parseNum(el.value,true);
