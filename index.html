@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de" data-build="2026-11-19 · 53d23b0c">
+<html lang="de" data-build="2026-11-19 · 1591279a">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<!-- Weihnachts-Jackpot · Build 2026-11-19 · 53d23b0c
+<!-- Weihnachts-Jackpot · Build 2026-11-19 · 1591279a
      Betrieb am Stand: iPad im Querformat mit Rotationssperre und Geführtem Zugriff (Bedienungshilfen).
      Bild wird per AirPlay gespiegelt: alles hier ist auf dem Fernseher sichtbar. -->
 <style>
@@ -841,9 +841,9 @@ const TIER_LABEL={gross:'groß',mittel:'mittel',klein:'klein'};
 const TIER_ORDER={gross:0,mittel:1,klein:2};
 const MAX_WIN=6,NAME_MAX=24;   // Name: höchstens 24 Zeichen (Gewinnplan bricht lange Namen zweizeilig um)
 const DEF_PINS={release:'1224',admin:'2412'};   // Standard laut Vorgabe; beim ersten Öffnen des Admins wird eine eigene PIN verlangt
-const FREE_P=5,FREE_N=2;   // Freispiel: Standard-Chance in % (≈ jedes 20. Spiel) und Spiele je Freispiel
+const FREE_P=8,FREE_N=2;   // Freispiel: Standard-Chance in % (≈ jedes 12. Spiel) und Spiele je Freispiel
 const STOCK_MAX=9999;
-const PLAN_DEF=100;   // erwartete Einnahmen am Markttag in € (Prognose: Median ≈ 95 €, siehe README „Prognose“) – im Admin änderbar
+const PLAN_DEF=85;    // erwartete Einnahmen in €: bewusst etwas unter der Prognose (Median ≈ 95 €), damit öfter gewonnen wird – siehe README
 /* Vorgabe der Gruppe (fest zugeteilte Stückzahlen): 3× Kaffee & Kuchen (Hauptgewinn, Symbol Glücks-7), 6× Kuchen, 5× Kaffee,
    20× Schoko-Weihnachtsmann (Symbol Zuckerstange, Warenwert 0,15 €). Wert = Warenwert je Stück in €.
    n0 = Startbestand (bestimmt die festen Chancen), n = noch vorhanden (zählt bei jedem Gutschein herunter). */
@@ -857,7 +857,7 @@ function groupPrizes(){
   return SYM_NAMES.map((nm,i)=>Object.assign({win:false,name:nm,value:1,tier:'klein',p:0,active:true,n:0,n0:0},d[i]||{}));
 }
 function defaultSettings(){
-  return{v:3,gamesPerEuro:4,confirm:'tap',pinRelease:DEF_PINS.release,pinAdmin:DEF_PINS.admin,
+  return{v:4,gamesPerEuro:4,confirm:'tap',pinRelease:DEF_PINS.release,pinAdmin:DEF_PINS.admin,
     prizes:groupPrizes(),auto:true,plan:PLAN_DEF,freeN:FREE_N,   // auto: Chancen aus Bestand, Warenwert und erwarteten Einnahmen (plan, € gesamt)
     calc:{euros:100,k:SYM_NAMES.map(()=>0)},
     musicOn:true,musicVol:.7,sfxOn:true,sfxVol:1,hoho:'lang',switchLock:false,tracks:{},   // tracks: nur abweichend vom Standard (def)
@@ -881,6 +881,7 @@ function sanitizeSettings(o){
   const fp=s.prizes[FREE];fp.value=0;fp.tier='klein';
   let n=0;s.prizes.forEach(p=>{if(p.win&&++n>MAX_WIN)p.win=false;});
   if(!old){s.auto=o.auto!==false;s.plan=Math.round(num(o.plan,10,100000,PLAN_DEF));s.freeN=Math.round(num(o.freeN,1,3,FREE_N));}
+  if(o.v===3){s.plan=PLAN_DEF;s.prizes[FREE].p=FREE_P;}   // Version 3 → 4: Gewinnchancen etwas höher (85 €, Freispiel 8 %), Bestand bleibt
   if(!old&&o.calc&&typeof o.calc==='object'){s.calc.euros=Math.round(num(o.calc.euros,0,100000,100));
     if(Array.isArray(o.calc.k))s.calc.k=s.calc.k.map((v,i)=>Math.round(num(o.calc.k[i],0,100000,v)));}
   s.musicOn=o.musicOn!==false;s.sfxOn=o.sfxOn!==false;
