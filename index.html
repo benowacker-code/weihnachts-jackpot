@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de" data-build="2026-11-19 · 0ba45868">
+<html lang="de" data-build="2026-11-19 · 2886adcb">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<!-- Weihnachts-Jackpot · Build 2026-11-19 · 0ba45868
+<!-- Weihnachts-Jackpot · Build 2026-11-19 · 2886adcb
      Betrieb am Stand: iPad im Querformat mit Rotationssperre und Geführtem Zugriff (Bedienungshilfen).
      Bild wird per AirPlay gespiegelt: alles hier ist auf dem Fernseher sichtbar. -->
 <style>
@@ -2224,13 +2224,13 @@ function celebrateFree(ok){
   setLights('mittel');windowEl.classList.add('won');
   const aw=document.querySelector(`.aw[data-sym="${FREE}"]`);if(aw)aw.classList.add('hit');
   reels.forEach(r=>{const c=r.row(1).c;c.style.setProperty('--n',2);c.classList.add('win');});
-  play('sleigh',{gain:.9});if(S.hoho!=='aus'&&ok)setTimeout(()=>play('hoho1',{gain:.85}),380);   // kurzes Ho ho ho passend zum Weihnachtsmann
+  setTimeout(sleighRide,150);play('sleigh',{gain:.9});if(S.hoho!=='aus'&&ok)setTimeout(()=>play('hoho1',{gain:.85}),380);   // kurzes Ho ho ho passend zum Weihnachtsmann
   setMsg(ok?`Ho ho ho – Freispiel! +${ok} ${gamesWord(ok)}`:'Freispiel – Höchststand erreicht');
   const tok=freeTok;
   setTimeout(()=>{if(tok!==freeTok)return;creditHold=0;update();if(ok){play('coins',{gain:.7});const c=$('counter');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');}},reduce?0:450);
   msgTimer=setTimeout(()=>{msgHold=false;if(!busy&&!winOpen){clearWin();setLights(isLocked()?'locked':'idle');update();}},2600);
 }
-/* Hauptgewinn: Weihnachtsmann fliegt im Schlitten von rechts nach links über den oberen Teil der Maschine (steigt dabei leicht),
+/* Jeder Gewinn (auch Freispiel): Weihnachtsmann fliegt im Schlitten von rechts nach links über den oberen Teil der Maschine (steigt dabei leicht),
    mit Goldfunken-Spur. Liegt über Abdunklung und Gutschein (z-index 45), fängt keine Berührungen ab. Ohne Bewegung (reduce): aus. */
 const SLEIGH_MS=4000,SLEIGH_W=460,SLEIGH_H=147;
 let sleighEl=null,sleighRaf=0;
@@ -2262,7 +2262,8 @@ function celebrate(w){
   windowEl.classList.add('won');
   const aw=document.querySelector(`.aw[data-sym="${w.sym}"]`);if(aw)aw.classList.add('hit');
   reels.forEach(r=>{const c=r.row(1).c;c.style.setProperty('--n',T.n);c.classList.add('win');});
-  if(w.tier==='gross'){body.classList.remove('jackpot');void body.offsetWidth;body.classList.add('jackpot');setTimeout(sleighRide,250);}
+  if(w.tier==='gross'){body.classList.remove('jackpot');void body.offsetWidth;body.classList.add('jackpot');}
+  setTimeout(sleighRide,250);   // Weihnachtsmann im Schlitten bei jedem Gewinn
   winSound(w.tier);
   if(T.conf){const c=T.conf.slice();if(w.tier==='gross'){c[1]=40;c[2]=W-40;}else{c[1]=SIDE;c[2]=SIDE+WIN_W;}setTimeout(()=>confetti(...c),w.tier==='gross'?250:350);}
   setTimeout(()=>{if(winOpen&&G.pending&&G.pending.no===w.no)showTicket(w);},reduce?300:T.delay);
