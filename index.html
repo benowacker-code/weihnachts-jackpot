@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de" data-build="2026-11-19 · 2886adcb">
+<html lang="de" data-build="2026-11-19 · 18405530">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<!-- Weihnachts-Jackpot · Build 2026-11-19 · 2886adcb
+<!-- Weihnachts-Jackpot · Build 2026-11-19 · 18405530
      Betrieb am Stand: iPad im Querformat mit Rotationssperre und Geführtem Zugriff (Bedienungshilfen).
      Bild wird per AirPlay gespiegelt: alles hier ist auf dem Fernseher sichtbar. -->
 <style>
@@ -278,15 +278,15 @@ body:not(.locked) .paytag{display:none}
 @keyframes toast{0%{transform:scale(.9);opacity:0}12%{transform:none;opacity:1}80%{opacity:1}100%{opacity:0}}
 
 /* ---------- Gewinn-Gutschein ---------- */
-#sleigh{position:absolute;left:0;top:0;z-index:45;pointer-events:none;will-change:transform;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
-#sleigh svg{display:block}
-#sleigh .lg.b{opacity:0;animation:gallop .32s steps(1,end) infinite}
-#sleigh .lg.a{animation:gallop .32s steps(1,end) infinite reverse}
+#sleigh{position:absolute;left:0;top:0;width:460px;height:171px;z-index:45;pointer-events:none;will-change:transform;contain:strict}
+#sleigh canvas{position:absolute;left:0;top:0;width:100%;height:100%;will-change:opacity}
+#sleigh .sb{opacity:0}
+#sleigh.fly .sb{animation:gallop .32s steps(1,end) infinite}
+#sleigh.fly .sa{animation:gallop .32s steps(1,end) infinite reverse}
 @keyframes gallop{0%{opacity:1}50%{opacity:0}}
-.spark{position:absolute;z-index:44;width:var(--sz);height:var(--sz);margin:calc(var(--sz) / -2) 0 0 calc(var(--sz) / -2);pointer-events:none;
-  background:#ffe9a6;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 4px rgba(255,214,120,.9));
-  animation:spark 1s ease-out forwards}
-@keyframes spark{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:translateY(26px) scale(.3) rotate(90deg)}}
+#sparks{position:absolute;left:0;top:0;width:0;height:0;z-index:44;pointer-events:none}
+.spark{position:absolute;left:-8px;top:-8px;width:16px;height:16px;opacity:0;will-change:transform,opacity;
+  background:radial-gradient(circle,#fff8d8 0 22%,#ffe39a 23% 100%);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 #dim{position:absolute;inset:0;background:rgba(12,5,4,.7);z-index:30;opacity:0;transition:opacity .35s}
 #dim.show{opacity:1}
 #fx{position:absolute;left:0;top:0;height:820px;pointer-events:none;z-index:35}
@@ -571,7 +571,7 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;bac
   #turn .pad{animation:none;transform:rotate(-90deg)}
   .bulb::before,.bulb::after,.strip,.sw::after{transition:none}
   body.ready .glass::after,.paytag,.cell.win img,.cell.win .glint::after,body.jackpot #title .t2,body.jackpot .marquee-light,body.jackpot #medals .md,
-  #counter.bump,#sleigh .lg,.ticket-wrap,.stamp,.reel.bump,.window.won .wl,.aw.hit::after,.window.won .ptr .lit,body.locked .price,#toast,.btn.arm,#knob.nope,.tg.nope svg,.trk .eq i,#medals .md.nope .mdw{animation:none}
+  #counter.bump,#sleigh canvas,.ticket-wrap,.stamp,.reel.bump,.window.won .wl,.aw.hit::after,.window.won .ptr .lit,body.locked .price,#toast,.btn.arm,#knob.nope,.tg.nope svg,.trk .eq i,#medals .md.nope .mdw{animation:none}
   #medals .md.nope .mdsh{opacity:.4}
 }
 </style>
@@ -2230,27 +2230,52 @@ function celebrateFree(ok){
   setTimeout(()=>{if(tok!==freeTok)return;creditHold=0;update();if(ok){play('coins',{gain:.7});const c=$('counter');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');}},reduce?0:450);
   msgTimer=setTimeout(()=>{msgHold=false;if(!busy&&!winOpen){clearWin();setLights(isLocked()?'locked':'idle');update();}},2600);
 }
-/* Jeder Gewinn (auch Freispiel): Weihnachtsmann fliegt im Schlitten von rechts nach links über den oberen Teil der Maschine (steigt dabei leicht),
-   mit Goldfunken-Spur. Liegt über Abdunklung und Gutschein (z-index 45), fängt keine Berührungen ab. Ohne Bewegung (reduce): aus. */
-const SLEIGH_MS=4000,SLEIGH_W=460,SLEIGH_H=147;
-let sleighEl=null,sleighRaf=0;
+/* Jeder Gewinn (auch Freispiel): Weihnachtsmann fliegt im Schlitten von rechts nach links über den oberen Teil der Maschine
+   (steigt dabei leicht), mit Goldfunken-Spur. Liegt über Abdunklung und Gutschein (z-index 45), fängt keine Berührungen ab.
+   Ohne Bewegung (reduce): aus.
+   Ruckelfrei: Der Schlitten wird beim Start der App einmal in zwei fertige Bilder gezeichnet (zwei Beinstellungen, Schatten
+   eingebacken) und als Ebene außerhalb des Bildes geparkt. Beim Flug ändern sich nur transform (Position) und opacity
+   (Galopp) – nichts muss neu gezeichnet werden. Funken: fester Vorrat, Web Animations (nur transform/opacity, kein Filter).
+   Der Flug beginnt mit dem ersten echten Bild (t0 aus requestAnimationFrame) – kein Sprung, wenn das erste Bild spät kommt. */
+const SLEIGH_MS=4000,SLEIGH_W=460,SLEIGH_H=147,SL_PAD=24,SPARKS=28,PARK='translate3d(-3000px,0,0)';
+let SL=null,sleighRaf=0;
+function sleighPrep(){
+  if(reduce)return Promise.resolve(null);
+  if(SL)return SL.ready;
+  const el=document.createElement('div');el.id='sleigh';el.setAttribute('aria-hidden','true');el.style.transform=PARK;
+  const H2=SLEIGH_H+SL_PAD,VB=133*H2/SLEIGH_H;   // unten Platz für den Schatten
+  const k=Math.min(3,Math.max(1,(devicePixelRatio||1)*Math.max(1,scale)));
+  const cv=['sa','sb'].map(c=>{const x=document.createElement('canvas');x.className=c;x.width=Math.round(SLEIGH_W*k);x.height=Math.round(H2*k);el.appendChild(x);return x;});
+  const sp=document.createElement('div');sp.id='sparks';sp.setAttribute('aria-hidden','true');
+  const pool=Array.from({length:SPARKS},()=>{const i=document.createElement('i');i.className='spark';sp.appendChild(i);return i;});
+  stage.appendChild(sp);stage.appendChild(el);
+  SL={el,pool,pi:0,ready:null};
+  const doc=hide=>`<svg xmlns="${NS}" width="${SLEIGH_W*k}" height="${H2*k}" viewBox="-6 -10 416 ${f2(VB)}">${DEFS}<style>.lg.${hide}{display:none}</style>`+
+    `<filter id="sh" x="-5%" y="-10%" width="110%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#000" flood-opacity=".45"/></filter>`+
+    `<g filter="url(#sh)" stroke-linejoin="round" stroke-linecap="round">${sleighArt()}</g></svg>`;
+  SL.ready=Promise.all(['b','a'].map((hide,n)=>new Promise(res=>{const im=new Image();
+    im.onload=()=>{try{cv[n].getContext('2d').drawImage(im,0,0,cv[n].width,cv[n].height);}catch(_){}res();};im.onerror=()=>res();im.src=toUri(doc(hide));})))
+    .then(()=>{SL.done=true;return SL;});
+  return SL.ready;
+}
 function sleighRide(){
   if(reduce)return;
-  if(!sleighEl){sleighEl=document.createElement('div');sleighEl.id='sleigh';sleighEl.setAttribute('aria-hidden','true');
-    sleighEl.innerHTML=`<svg width="${SLEIGH_W}" height="${SLEIGH_H}" viewBox="-6 -10 416 133">${DEFS}<g stroke-linejoin="round" stroke-linecap="round">${sleighArt()}</g></svg>`;
-    stage.appendChild(sleighEl);}
-  cancelAnimationFrame(sleighRaf);sleighEl.hidden=false;
-  const t0=performance.now(),x0=W+30,x1=-SLEIGH_W-60;let lastSp=0;
+  if(!SL||!SL.done){sleighPrep();return;}   // noch nicht vorgezeichnet (erste Sekunde nach dem Start): lieber kein Flug als ein ruckelnder
+  cancelAnimationFrame(sleighRaf);
+  const el=SL.el,x0=W+30,x1=-SLEIGH_W-60;let t0=0,lastSp=0;
+  el.classList.add('fly');
   const step=now=>{
+    if(!t0)t0=now;
     const k=Math.min(1,(now-t0)/SLEIGH_MS),x=x0+(x1-x0)*k,y=110-104*k+Math.sin(k*Math.PI*5)*7,rot=-4+Math.cos(k*Math.PI*5)*1.6;
-    sleighEl.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${rot.toFixed(2)}deg)`;
-    if(now-lastSp>40&&k<.97){lastSp=now;sparkle(x+SLEIGH_W-8+rnd()*18,y+SLEIGH_H-18+rnd()*12);}
-    if(k<1)sleighRaf=requestAnimationFrame(step);else sleighEl.hidden=true;};
+    el.style.transform=`translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotate(${rot.toFixed(2)}deg)`;
+    if(now-lastSp>60&&k>.01&&k<.97){lastSp=now;sparkle(x+SLEIGH_W-8+rnd()*18,y+SLEIGH_H-18+rnd()*12);}
+    if(k<1)sleighRaf=requestAnimationFrame(step);else{el.classList.remove('fly');el.style.transform=PARK;}};
   sleighRaf=requestAnimationFrame(step);
 }
 function sparkle(x,y){
-  const s=document.createElement('i');s.className='spark';s.style.left=x.toFixed(1)+'px';s.style.top=y.toFixed(1)+'px';
-  s.style.setProperty('--sz',(7+rnd()*9).toFixed(1)+'px');stage.appendChild(s);setTimeout(()=>s.remove(),1000);
+  if(!SL||!SL.pool[0].animate)return;
+  const s=SL.pool[SL.pi=(SL.pi+1)%SPARKS],z=.5+rnd()*.6,a=`translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+  s.animate([{opacity:1,transform:`${a} scale(${z.toFixed(2)})`},{opacity:0,transform:`${a} translateY(26px) scale(${(z*.3).toFixed(2)}) rotate(90deg)`}],{duration:1000,easing:'ease-out',fill:'both'});
 }
 const TIERS={
   gross:{n:4,delay:1750,stamp:'Hauptgewinn',conf:[170,null,null,-10,220]},
@@ -2862,7 +2887,7 @@ function tabEinst(){
     <div class="srow"><b>Freigabe-PIN</b><button type="button" class="btn" data-act="pin" data-v="release">Ändern …</button><span class="note">Zweimal eingeben; Ziffern bleiben verborgen.</span></div>
     <div class="srow"><b>Admin-PIN</b><button type="button" class="btn" data-act="pin" data-v="admin">Ändern …</button><span class="note">Erst die aktuelle Admin-PIN, dann zweimal die neue.</span></div>
     <div class="srow"><b>Guthaben auf der Maschine</b><span><b data-o="cr">${G.credits}</b> ${gamesWord(G.credits)}</span><button type="button" class="btn" data-act="zero" ${G.credits?'':'disabled'}>Auf 0 setzen …</button></div>
-    <div class="srow"><b>Gutscheine</b><span>Nächste Nr.: <b data-o="vno">${pad3(G.voucher+1)}</b></span><button type="button" class="btn" data-act="vjump">Neue Nummernserie …</button><span class="note">läuft dauerhaft weiter</span></div>
+    <div class="srow"><b>Gutscheine</b><span>Nächste Nr.: <b data-o="vno">${pad3(G.voucher+1)}</b></span><button type="button" class="btn" data-act="vjump">Neue Nummernserie …</button><span class="note">beginnt nach „Statistik zurücksetzen“ wieder bei 001</span></div>
     <div class="srow"><b>Vollbild</b><div class="seg">${[['tippen','Beim ersten Tippen'],['aus','Aus']].map(([v,l])=>`<button type="button" data-act="fsmode" data-v="${v}" aria-pressed="${S.fullscreen===v}">${l}</button>`).join('')}</div>
       <button type="button" class="btn" data-act="fsnow">${fsEl()?'Vollbild beenden':'Jetzt testen'}</button><span class="note" data-o="fsNote">${esc(fsNote())}</span></div>
     <div class="srow"><b>Rand oben</b><div class="seg">${[['auto','Automatisch'],...TOP_EDGES.map(v=>[String(v),v+' px'])].map(([v,l])=>`<button type="button" data-act="topedge" data-v="${v}" aria-pressed="${String(S.topEdge)===v}">${l}</button>`).join('')}</div>
@@ -3006,7 +3031,7 @@ function onAct(e){
     case 'tier':S.prizes[i].tier=v;changed();rerender();break;
     case 'apply':applySuggestion();break;
     case 'copy':copyStats();break;
-    case 'resetStats':askConfirm('Statistik zurücksetzen?','Alle Zähler und die Liste der letzten Gewinne werden gelöscht. Gutschein-Nummern laufen weiter.','Ja, zurücksetzen',()=>{ST=emptyStats();saveStats();autoP();saveSettings();rerender();flash('stMsg','Statistik zurückgesetzt.');});break;
+    case 'resetStats':askConfirm('Statistik zurücksetzen?','Alle Zähler und die Liste der letzten Gewinne werden gelöscht, die Gutschein-Nummern beginnen wieder bei 001.','Ja, zurücksetzen',()=>{ST=emptyStats();saveStats();if(!G.pending){G.voucher=0;saveState();}autoP();saveSettings();rerender();flash('stMsg',G.pending?'Statistik zurückgesetzt (offener Gutschein – Nummern laufen weiter).':'Statistik zurückgesetzt, nächster Gutschein: Nr. 001.');});break;
     case 'musicOn':S.musicOn=!S.musicOn;ON.music=S.musicOn;saveSettings();syncSwitches();applyLevels();if(!M.on)musicStart();b.setAttribute('aria-pressed',String(S.musicOn));break;
     case 'sfxOn':S.sfxOn=!S.sfxOn;ON.sfx=S.sfxOn;saveSettings();syncSwitches();applyLevels();b.setAttribute('aria-pressed',String(S.sfxOn));break;
     case 'swlock':S.switchLock=v==='true';saveSettings();b.parentElement.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));break;
@@ -3100,6 +3125,7 @@ function boot(){
   setInterval(()=>{if(!document.hidden&&(innerWidth!==lastIW||innerHeight!==lastIH))fit();},1500);
   addEventListener('orientationchange',()=>setTimeout(fit,250));
   buildAward();$('priceN').textContent=`${S.gamesPerEuro} ${gamesWord(S.gamesPerEuro)}`;
+  setTimeout(()=>{sleighPrep();},1200);   // Schlitten vorzeichnen, solange nichts los ist (ruckelfreier Start beim ersten Gewinn)
   fit();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{layoutMarquee();fitAward();fitMsg();}).catch(()=>{});
   setInterval(()=>{lightTick();lampTick();},50);lightTick();
@@ -3154,7 +3180,7 @@ function boot(){
       return{prevPos:prev.ti,prevEnd:+prev.end.toFixed(3),pos:M.cur.ti,t:+M.cur.t.toFixed(3),xo:XO,prevFallback:!!prev.s.onended};},
     busy:()=>busy,winOpen:()=>winOpen,paused:()=>paused,
     topCap:()=>Object.assign({},TOPCAP),fs:()=>Object.assign({},FS,{el:!!fsEl(),avail:fsAvail(),mode:S.fullscreen}),
-    sleigh:()=>{sleighRide();return !!sleighEl;},
+    sleigh:()=>{sleighRide();return !!SL;},
     logoDemo:(s,k)=>{const m=medalEl(s);if(m)m.classList.toggle('press',k>0);ringSet(s,k);},   // nur für Screenshots: Logo gehalten, Ring zu k
   };
 }
